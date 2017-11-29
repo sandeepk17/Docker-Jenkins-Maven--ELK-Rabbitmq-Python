@@ -1,0 +1,54 @@
+version: "3.1"
+
+services:
+  myjenkins:
+    image: mkokoko/jenkins:late
+    ports:
+     - "8080:8080"
+    volumes:
+     - "./jobs:/var/jenkins_home/jobs/"
+     - "./m2deps:/var/jenkins_home/.m2/repository/"
+     - "./jenkins_script:/usr/share/script/"
+     
+  logstash:
+    image: logstash:2
+    volumes:
+          - ./:/config
+    command: logstash -f /config/logstash.conf
+    links:
+     - elasticsearch
+    depends_on:
+     - elasticsearch
+
+  elasticsearch:
+     image: elasticsearch:5.6.4
+     ports:
+      - "9200:9200"
+     volumes:
+      - "./es_data/es_data:/usr/share/elasticsearch/data/"
+
+
+  kibana:
+    image: kibana:5
+    ports:
+     - "5601:5601"
+    links:
+     - elasticsearch
+    environment:
+      ELASTICSEARCH_URL: http://elasticsearch:9200
+    depends_on:
+     - elasticsearch
+
+  rabbitmq:
+    #image: rabbitmq:3.6.14-management
+    build: rabbitmq
+    ports:
+     - "5671:5671"
+     - "5672:5672"
+     - "15671:15671"
+     - "15672:15672"
+     - "25672:25672"
+    links:
+     - myjenkins
+    volumes:
+     - "./rabbitmq_script:/usr/share/script/"
