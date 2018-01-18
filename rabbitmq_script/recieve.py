@@ -9,10 +9,10 @@ channel.queue_declare(queue='Maven')
 def callback(ch, method, properties, body):
     import smtplib
 
-    gmail_user = "mkrtichmatevosyan9@gmail.com"
-    gmail_pwd = "Mko555653"
-    FROM = "mkrtichmatevosyan9@gmail.com"
-    TO = ["mukuch90@gmail.com"]
+    gmail_user = #enter your mail
+    gmail_pwd = #enter your pass
+    FROM =  #enter your mail
+    TO =  #enter that  mail you wanna send
     SUBJECT = "test"
     TEXT = body
 	
